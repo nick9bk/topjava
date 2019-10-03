@@ -52,6 +52,10 @@
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 3. <a href="https://drive.google.com/file/d/15f0PbxYH8xbks38o2YjKNRBET3IbaQhc">HW0 Optional 2: реализация в один проход и одной строкой Stream API</a>
 > Дабавил в `getFilteredByExecutor` для завершения выполнения JVM `executorService.shutdown()`
 
+- Решение, которое будем использовать в проекте: `getFiltered()`
+- Решение Optional 2 циклами: `getFilteredByRecursion(), getFilteredByAtomic(), getFilteredByClosure(), getFilteredByExecutor()`
+- Решение Optional 2 стримами: `getFilteredByFlatMap(), getFilteredByCollector()`
+
 #### Apply 1_3_HW0_optional2.patch
 
 ## Занятие 1:
