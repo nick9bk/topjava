@@ -7,7 +7,8 @@ import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import java.util.Arrays;
 
-import static ru.javawebinar.topjava.util.MealsUtil.MEALS;
+import static ru.javawebinar.topjava.MealTestData.MEALS;
+
 
 public class SpringMain {
     public static void main(String[] args) {

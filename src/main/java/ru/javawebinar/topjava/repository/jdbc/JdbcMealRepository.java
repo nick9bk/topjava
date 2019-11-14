@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -53,8 +54,9 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        return jdbcTemplate.queryForObject("select id, calories, description, date_time as dateTime from meals where user_id = ? and id = ?;",
+        List<Meal> query = jdbcTemplate.query("select id, calories, description, date_time as dateTime from meals where user_id = ? and id = ?;",
                 new Object[]{userId, id}, ROW_MAPPER);
+        return DataAccessUtils.singleResult(query);
     }
 
     @Override
