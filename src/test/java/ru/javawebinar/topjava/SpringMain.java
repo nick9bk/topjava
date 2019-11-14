@@ -2,17 +2,12 @@ package ru.javawebinar.topjava;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import ru.javawebinar.topjava.model.Role;
-import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.meal.MealRestController;
-import ru.javawebinar.topjava.web.user.AdminRestController;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
 import java.util.Arrays;
-import java.util.List;
+
+import static ru.javawebinar.topjava.util.MealsUtil.MEALS;
 
 public class SpringMain {
     public static void main(String[] args) {
@@ -24,11 +19,18 @@ public class SpringMain {
 //            System.out.println();
 
             MealRestController mealController = appCtx.getBean(MealRestController.class);
-            List<MealTo> filteredMealsWithExcess =
-                    mealController.getBetween(
-                            LocalDate.of(2015, Month.MAY, 30), LocalTime.of(7, 0),
-                            LocalDate.of(2015, Month.MAY, 31), LocalTime.of(11, 0));
-            filteredMealsWithExcess.forEach(System.out::println);
+//            List<MealTo> filteredMealsWithExcess =
+//                    mealController.getBetween(
+//                            LocalDate.of(2015, Month.MAY, 30), LocalTime.of(10, 1),
+//                            LocalDate.of(2015, Month.MAY, 31), LocalTime.of(11, 0));
+//
+//            filteredMealsWithExcess.forEach(System.out::println);
+            Meal meal = MEALS.get(1);
+            Meal meal1 = mealController.create(meal);
+            System.out.println(meal1);
+            meal.setId(100002);
+            meal.setCalories(meal.getCalories() + 100);
+            mealController.update(meal, meal.getId());
         }
     }
 }
