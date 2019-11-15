@@ -7,6 +7,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -54,6 +55,7 @@ public class MealServiceTest {
     }
 
     @Test
+    @Transactional
     public void get() throws Exception {
         Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
         assertMatch(actual, ADMIN_MEAL1);
