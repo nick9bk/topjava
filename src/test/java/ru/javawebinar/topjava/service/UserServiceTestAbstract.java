@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -9,23 +10,25 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
-import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.Role;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.time.LocalDate;
-import java.time.Month;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
-import static ru.javawebinar.topjava.UserTestData.USER_ID;
+import static ru.javawebinar.topjava.UserTestData.*;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -34,7 +37,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public class MealServiceTest {
+public abstract class UserServiceTestAbstract {
     private static final Logger log = getLogger("result");
 
     private static StringBuilder results = new StringBuilder();
@@ -63,83 +66,71 @@ public class MealServiceTest {
     }
 
     @Autowired
-    private MealService service;
+    private UserService service;
 
-    @Test
-    public void delete() throws Exception {
-        service.delete(MEAL1_ID, USER_ID);
-        thrown.expect(NotFoundException.class);
-        service.get(MEAL1_ID, USER_ID);
-    }
+    @Autowired
+    private CacheManager cacheManager;
 
-    @Test
-    public void deleteNotFound() throws Exception {
-        thrown.expect(NotFoundException.class);
-        service.delete(1, USER_ID);
-    }
-
-    @Test
-    public void deleteNotOwn() throws Exception {
-        thrown.expect(NotFoundException.class);
-        service.delete(MEAL1_ID, ADMIN_ID);
+    @Before
+    public void setUp() throws Exception {
+        cacheManager.getCache("users").clear();
     }
 
     @Test
     public void create() throws Exception {
-        Meal newMeal = getCreated();
-        Meal created = service.create(newMeal, USER_ID);
+        User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
+        User created = service.create(newUser);
         Integer newId = created.getId();
-        newMeal.setId(newId);
-        assertMatch(created, newMeal);
-        assertMatch(service.get(newId, USER_ID), newMeal);
+        newUser.setId(newId);
+        assertMatch(created, newUser);
+        assertMatch(service.get(newId), newUser);
+    }
+
+    @Test(expected = DataAccessException.class)
+    public void duplicateMailCreate() throws Exception {
+        service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER));
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void delete() throws Exception {
+        service.delete(USER_ID);
+        service.get(USER_ID);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void deletedNotFound() throws Exception {
+        service.delete(1);
     }
 
     @Test
     public void get() throws Exception {
-        Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
-        assertMatch(actual, ADMIN_MEAL1);
+        User user = service.get(USER_ID);
+        assertMatch(user, USER);
     }
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void getNotFound() throws Exception {
-        thrown.expect(NotFoundException.class);
-        service.get(MEAL1_ID, ADMIN_ID);
+        service.get(1);
     }
 
     @Test
-    public void getNotOwn() throws Exception {
-        thrown.expect(NotFoundException.class);
-        service.get(MEAL1_ID, ADMIN_ID);
+    public void getByEmail() throws Exception {
+        User user = service.getByEmail("user@yandex.ru");
+        assertMatch(user, USER);
     }
 
     @Test
     public void update() throws Exception {
-        Meal updated = getUpdated();
-        service.update(updated, USER_ID);
-        assertMatch(service.get(MEAL1_ID, USER_ID), updated);
-    }
-
-    @Test
-    public void updateNotFound() throws Exception {
-        thrown.expect(NotFoundException.class);
-        thrown.expectMessage("Not found entity with id=" + MEAL1_ID);
-        service.update(MEAL1, ADMIN_ID);
+        User updated = new User(USER);
+        updated.setName("UpdatedName");
+        updated.setCaloriesPerDay(330);
+        service.update(updated);
+        assertMatch(service.get(USER_ID), updated);
     }
 
     @Test
     public void getAll() throws Exception {
-        assertMatch(service.getAll(USER_ID), MEALS);
-    }
-
-    @Test
-    public void getBetween() throws Exception {
-        assertMatch(service.getBetweenDates(
-                LocalDate.of(2015, Month.MAY, 30),
-                LocalDate.of(2015, Month.MAY, 30), USER_ID), MEAL3, MEAL2, MEAL1);
-    }
-
-    @Test
-    public void getBetweenWithNullDates() throws Exception {
-        assertMatch(service.getBetweenDates(null, null, USER_ID), MEALS);
+        List<User> all = service.getAll();
+        assertMatch(all, ADMIN, USER);
     }
 }
