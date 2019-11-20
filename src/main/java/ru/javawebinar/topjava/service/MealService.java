@@ -22,6 +22,10 @@ public class MealService {
         this.repository = repository;
     }
 
+    public Meal getWithUser(int id, int userId) {
+        return checkNotFoundWithId(repository.getWithUser(id, userId), id);
+    }
+
     public Meal get(int id, int userId) {
         return checkNotFoundWithId(repository.get(id, userId), id);
     }

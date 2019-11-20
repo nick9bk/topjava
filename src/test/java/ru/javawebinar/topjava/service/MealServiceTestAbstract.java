@@ -63,7 +63,7 @@ public abstract class MealServiceTestAbstract {
     }
 
     @Autowired
-    private MealService service;
+    protected MealService service;
 
     @Test
     public void delete() throws Exception {
