@@ -44,4 +44,5 @@ abstract public class AbstractServiceTest {
             Assert.assertThat(getRootCause(e), instanceOf(exceptionClass));
         }
     }
+
 }
