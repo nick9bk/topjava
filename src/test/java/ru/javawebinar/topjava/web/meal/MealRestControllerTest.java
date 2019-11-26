@@ -65,6 +65,28 @@ public class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getBetween2() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "by2?startDate=2015-05-30&startTime=10:00:00&endDate=2015-05-31&endTime=13:01:00"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(
+                contentJson(
+                        mealRestController.getBetween(LocalDate.of(2015, 05, 30),
+                                LocalTime.of(10, 00), LocalDate.of(2015, 05, 31), LocalTime.of(13, 01))));
+    }
+
+    @Test
+    void getBetween2withNullParams() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + "by2?startDate=2015-05-30&endDate=2015-05-31&endTime=13:01:00"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andDo(print()).andExpect(
+                contentJson(
+                        mealRestController.getBetween(LocalDate.of(2015, 05, 30),
+                                null, LocalDate.of(2015, 05, 31), LocalTime.of(13, 01))));
+    }
+
+    @Test
     void create() throws Exception {
         Meal newMeal = new Meal(MEAL1);
         newMeal.setId(null);
