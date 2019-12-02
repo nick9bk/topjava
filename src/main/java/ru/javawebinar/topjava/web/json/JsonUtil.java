@@ -34,13 +34,4 @@ public class JsonUtil {
             throw new IllegalStateException("Invalid write to JSON:\n'" + obj + "'", e);
         }
     }
-
-    public static <T> String writeIgnoreProps(T obj, String... ignoreProps) {
-        Map<String, Object> map = getMapper().convertValue(obj, new TypeReference<Map<String, Object>>() {
-        });
-        for (String prop : ignoreProps) {
-            map.remove(prop);
-        }
-        return writeValue(map);
-    }
 }
