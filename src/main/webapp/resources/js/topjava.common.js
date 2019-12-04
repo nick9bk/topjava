@@ -4,11 +4,11 @@ function makeEditable(ctx) {
     context = ctx;
     console.log(context);
     form = $('#detailsForm');
-    $('body').on('click', '.delete', function() {
-        if (confirm('Are you sure?')) {
-            deleteRow($(this).attr("id"));
-        }
-    });
+    // $('body').on('click', '.delete', function() {
+    //     if (confirm('Are you sure?')) {
+    //         deleteRow($(this).attr("id"));
+    //     }
+    // });
 
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(jqXHR);

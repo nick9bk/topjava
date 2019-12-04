@@ -30,7 +30,7 @@ $(function () {
                     {
                         "orderable": false,
                         "render": function ( data, type, full, meta ) {
-                            return '<button class="btn btn-primary btn-small delete" id = ' + full.id +'>Delete</button>';
+                            return '<button class="btn btn-primary btn-small delete" onclick="deleteRow(' + full.id +')">Delete</button>';
                         }
                     }
                 ],
