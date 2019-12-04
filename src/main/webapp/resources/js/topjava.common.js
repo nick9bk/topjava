@@ -2,8 +2,9 @@ var context, form;
 
 function makeEditable(ctx) {
     context = ctx;
+    console.log(context);
     form = $('#detailsForm');
-    $(".delete").click(function () {
+    $('body').on('click', '.delete', function() {
         if (confirm('Are you sure?')) {
             deleteRow($(this).attr("id"));
         }
@@ -33,6 +34,7 @@ function deleteRow(id) {
 }
 
 function updateTable() {
+    console.log(context);
     $.get(context.ajaxUrl, function (data) {
         context.datatableApi.clear().rows.add(data).draw();
     });

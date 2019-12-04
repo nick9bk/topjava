@@ -1,25 +1,21 @@
-// $(document).ready(function () {
 $(function () {
     makeEditable({
-            ajaxUrl: "ajax/admin/users/",
+            ajaxUrl: "ajax/profile/meals/",
             datatableApi: $("#datatable").DataTable({
                 "paging": false,
                 "info": true,
                 "columns": [
                     {
-                        "data": "name"
+                        "data": "dateTime"
                     },
                     {
-                        "data": "email"
+                        "data": "description"
                     },
                     {
-                        "data": "roles"
+                        "data": "calories"
                     },
                     {
-                        "data": "enabled"
-                    },
-                    {
-                        "data": "registered"
+                        "data": "excess"
                     },
                     {
                         "orderable": false,
