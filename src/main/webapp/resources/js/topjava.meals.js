@@ -4,6 +4,13 @@ $(function () {
             datatableApi: $("#datatable").DataTable({
                 "paging": false,
                 "info": true,
+                "createdRow": function( row, data, dataIndex){
+                    if( data.excess == true){
+                        $(row).addClass('table-success');
+                    } else {
+                        $(row).addClass('table-danger');
+                    }
+                },
                 "columns": [
                     {
                         "data": "dateTime"
