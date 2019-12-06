@@ -1,7 +1,8 @@
 // $(document).ready(function () {
+const userUrl = "ajax/admin/users/";
 $(function () {
     makeEditable({
-            ajaxUrl: "ajax/admin/users/",
+            ajaxUrl: userUrl,
             datatableApi: $("#datatable").DataTable({
                 "paging": false,
                 "info": true,
@@ -16,7 +17,9 @@ $(function () {
                         "data": "roles"
                     },
                     {
-                        "data": "enabled"
+                        "render": function ( data, type, full, meta ) {
+                            return '<input type="checkbox" class="checkbox" onclick="enableUser(this, ' + full.id + ')"' + (full.enabled === true ? ' checked' : '') + ' />';
+                        }
                     },
                     {
                         "data": "registered"
@@ -45,3 +48,7 @@ $(function () {
     );
     updateTable();
 });
+
+function enableUser(box, id) {
+    $.get(userUrl + 'enabled/' + id, {enable : $(box).prop("checked")});
+}
