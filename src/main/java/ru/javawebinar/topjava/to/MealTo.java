@@ -1,26 +1,35 @@
 package ru.javawebinar.topjava.to;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.*;
 import java.beans.ConstructorProperties;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class MealTo extends BaseTo {
 
+    @PastOrPresent(message = "time must be in past")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @NotNull(message = "must be not null")
     private final LocalDateTime dateTime;
 
+    @Size(min = 2, max = 120, message = "length must be between 2 and 120 characters")
     private final String description;
 
+    @Min(value = 10, message = "must be more 10")
+    @Max(value = 5000, message = "must be less 5000")
     private final int calories;
 
     private final boolean excess;
 
     @ConstructorProperties({"id", "dateTime", "description", "calories", "excess"})
-    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
+    public MealTo(Integer id, LocalDateTime dateTime, String description, Integer calories, Boolean excess) {
         super(id);
         this.dateTime = dateTime;
         this.description = description;
-        this.calories = calories;
-        this.excess = excess;
+        this.calories = Objects.requireNonNullElse(calories, 0);
+        this.excess = Objects.requireNonNullElse(excess, false);
     }
 
     public LocalDateTime getDateTime() {

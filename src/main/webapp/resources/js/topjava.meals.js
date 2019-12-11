@@ -1,3 +1,4 @@
+const mealsAjaxUrl = "ajax/profile/meals/";
 function updateFilteredTable() {
     $.ajax({
         type: "GET",
@@ -13,8 +14,12 @@ function clearFilter() {
 
 $(function () {
     makeEditable({
-        ajaxUrl: "ajax/profile/meals/",
+        ajaxUrl: mealsAjaxUrl,
         datatableApi: $("#datatable").DataTable({
+            "ajax": {
+                "url": mealsAjaxUrl,
+                "dataSrc": ""
+            },
             "paging": false,
             "info": true,
             "columns": [
@@ -28,12 +33,14 @@ $(function () {
                     "data": "calories"
                 },
                 {
-                    "defaultContent": "Edit",
-                    "orderable": false
+                    "defaultContent": "",
+                    "orderable": false,
+                    "render": renderEditBtn
                 },
                 {
-                    "defaultContent": "Delete",
-                    "orderable": false
+                    "defaultContent": "",
+                    "orderable": false,
+                    "render": renderDeleteBtn
                 }
             ],
             "order": [
@@ -43,6 +50,8 @@ $(function () {
                 ]
             ]
         }),
-        updateTable: updateFilteredTable
+        updateTable: function () {
+            $.get(mealsAjaxUrl, updateTableByData);
+        }
     });
 });
