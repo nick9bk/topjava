@@ -10,6 +10,7 @@ import ru.javawebinar.topjava.to.MealTo;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.StringJoiner;
@@ -74,8 +75,7 @@ public class MealUIController extends AbstractMealController {
     public List<MealTo> getBetween(
             @RequestParam(value = "startDate", required = false) LocalDate startDate,
             @RequestParam(value = "startTime", required = false) LocalTime startTime,
-            @RequestParam(value = "endDate", required = false) LocalDate endDate,
-            @RequestParam(value = "endTime", required = false) LocalTime endTime) {
+            @RequestParam(value = "endDate", required = false) LocalDateTime endDate) {
         return super.getBetween(startDate, startTime, endDate, endTime);
     }
 }
